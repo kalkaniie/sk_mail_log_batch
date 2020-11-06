@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Query">
+
+	<typeAlias alias="SentmailEntity" type="com.nara.batch.entity.SentMailEntity" />
+
+	<select id="selectSentMailLog" resultClass="SentmailEntity"
+			parameterClass="java.util.HashMap">
+	   	<![CDATA[
+    SELECT
+			MAIL_SND_SER_NUM,
+		   	RCVR_SER_NUM,
+		   	M_IDX,
+		   	M_TO,
+		   	M_TIME,
+		   	MAIL_SEND_RSCODE,
+		   	( SELECT
+		   		MAIL_SEND_RSMSG
+			  FROM DELIVERY_RESULT_INFO D
+		      WHERE D.MAIL_SEND_RSCODE = M.MAIL_SEND_RSCODE
+		    ) AS MAIL_SEND_RSMSG
+		FROM
+			$MAIL_TABLE$ M
+		WHERE
+		    MAIL_LOG_UKEYSEND_RESULT IS NULL
+        	AND MAIL_SND_SER_NUM IS NOT NULL
+        	AND RCVR_SER_NUM IS NOT NULL
+        	AND MAIL_SEND_RSCODE IS NOT NULL
+		   	AND MBOX_IDX IN ( SELECT MBOX_IDX FROM MBOX WHERE MBOX_TYPE = 2 )
+		ORDER BY M_TIME
+	   	]]>
+	</select>
+
+	<update id="updateSentMailResult" parameterClass="java.util.HashMap">
+		UPDATE $MAIL_TABLE$ 
+		SET MAIL_LOG_UKEYSEND_RESULT = 'Y'
+		WHERE M_IDX = #M_IDX#
+   </update>
+
+</sqlMap>

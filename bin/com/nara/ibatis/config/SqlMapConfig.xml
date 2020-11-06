@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<properties url="file:////usr/local/kebi/sk_mail_log_batch/properties/batch.properties" />
+	
+  <transactionManager type="JDBC" commitRequired="true">
+    <dataSource type="SIMPLE">
+      <property name="JDBC.Driver" value="${orgdb.jdbc.driver}"/>
+      <property name="JDBC.ConnectionURL" value="${orgdb.jdbc.url}"/>
+      <property name="JDBC.Username" value="${orgdb.userid}"/>
+      <property name="JDBC.Password" value="${orgdb.userpw}"/>
+    </dataSource>
+  </transactionManager>
+
+  <sqlMap resource="${orgdb.sqlfile}/Query.xml"/>
+</sqlMapConfig>
